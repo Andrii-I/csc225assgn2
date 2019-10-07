@@ -1,17 +1,18 @@
 # Andrii Ieroshenko, version Count Ones
-# Registers use: x1: logistical use for saving result to memory
-#                x2: (shifted) M[0x10010000], 
+# Registers use: x1: logistical use for saving final result to memory
+#                x2: initial M[0x10010000] value loaded here, then it will be logically shifted right to extract each subsequent bit
 #                x3: counter for the loop, 
 #                x4: count of 1s in M[0x10010000],
-#                x5: store result of AND'ing
+#                x5: store result of AND'ing x2 to check if its rightmost bit was > 0
 # Pseudocode:
 # x2 =  M[0x10010000];
 # x3 = 32;
 # x4 = 0;
+# x5 = 0
 # while (x3 > 0){
 #     x4 += x2 and 1;     
-#     x3 -= 1;
 #     x2 = x2 shifted right lofically by 1;
+#     x3 -= 1;
 # }
 # M[0x10010004] = x4;
 #
@@ -44,11 +45,11 @@ main:
 loop:
     andi x5, x2, 1 # x5 <- x2 and 1
     add x4, x4, x5 # add the result of and'ing to the count of 1s
-    srli x2, x2, 1 # logically shift x2 by 1
+    srli x2, x2, 1 # logically shift x2 right by 1
     addi x3, x3, -1 # decrement counter
     bgtz x3, loop # initiate another cycle of the loop if counter > 0
 done:
     sw x4, 0x10010004, x1 # M[0x10010004] <- x4
 
 #.data 
-#numbers: 0x68F6 #plug in numbers for testing if needed
+#numbers: 0xFFFFFFFF #plug in numbers for testing if needed
