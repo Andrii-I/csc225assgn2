@@ -1,0 +1,45 @@
+Build the addnums.asm program.
+Inspect the text memory region at text section x400000 and the data section at 0x10010000 to verify your files were loaded.  
+Compare the values in memory in the data section to the data.asm file.  
+Does it look familiar? A: Yes, at text section out code/instructions are stored; at data section program data is stored 
+                          (so all values/code was in 2 assembled programs could be found in these 2 sections)
+What is different? A: in data section, letters in the values are lowercase while data.asm had capital letters
+
+Inspect line 9 in the source window.
+Why does the la instruction does not directly translate to a single instruction? A: "la" is a pseudoinstruction. Therefore it is 
+                                                                                    replaced by appropriate set of basic
+                                                                                    instructions upon assembly
+                                                     
+Is this inconsistent with what is considered a “RISC” ISA? Why or why not? A: It is consistent, because "la" is defined as 
+                                                                              pseudoinstruction in
+                                                                              RISC documentation. Which it is. And it's behaviour 
+                                                                              consistent with RISC ISA principles.
+
+andi t1,t2,-100         Bitwise AND immediate : Set t1 to bitwise AND of t2 and sign-extended 12-bit immediate
+addi t1,t2,-100         Addition immediate: set t1 to (t2 plus signed 12-bit immediate)
+auipc t1,100000         Add upper immediate to pc: set t1 to (pc plus an upper 20-bit immediate)
+lw t1, -100(t2)         Set t1 to contents of effective memory word address
+add t1,t2,t3            Addition: set t1 to (t2 plus t3)
+blt t1,t2,label         Branch if less than: Branch to statement at label's address if t1 is less than t2
+
+la t1,label             Load Address : Set t1 to label's address
+bgtz t1,label           Branch if Greater Than: Branch to statement at label if t1 > 0
+
+
+# Q: What is the total calculated by adding the 10 numbers?
+# A: 0xabcdef00
+
+# Q: Describe how register x2 is used by the program.  (What does it represent?)
+# A: It is used as a pointer, to store addresses of/point to the numbers to be added to sum. 
+#    On line 9, address of the beginning of tbl label memory loaded into it (it points to 1st word/number to be added
+#    and each subsequent word is a next number to be added)
+#    On line 11, value of x2 is used as an memory adress and value from this address is loaded into x3 (next number to be added)
+#    On line 12, value of x2 is incremented by 0x4 so it now points to next word/number to be added 
+
+# Q:Why is x2 incremented by 4 in the instruction at 0x00400018?
+# A: Because this way (due to addnums logic and data from data.asm) x2 will point to the next word at tbl label/to the next number
+#    to be added
+
+# Q:Why is the value 10 loaded into x4?
+# A: Because x4 serves as a loop counter: it is decremented by 1 at line 14 by, checked vs 0 at line 15 and new loop is 
+#    initiated if it is > 0. And program is designed to run 10 times/add 10 numbers

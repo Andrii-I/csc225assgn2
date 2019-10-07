@@ -22,4 +22,4 @@ blah:	.word	0x12345678
 byteme:	.byte	0xaa
 byteU:	.byte	0xbb
 junk:	.word	0x11223344
-
+lb 
